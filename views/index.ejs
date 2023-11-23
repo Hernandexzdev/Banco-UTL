@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/styles.css">
+    <title>Banco UTL</title>
+</head>
+<body>
+    <main class="container">
+        <section class="ui">
+            <div class="container-left">
+                <form id="credit-card">
+                    <div class="number-container">
+                        <label>Numero de Tarjeta</label>
+                        <input type="text" name="N_tarjeta" id="card-number" maxlength="19" placeholder=""
+                        required
+                        onkeypress="return event.charCode >= 48 && event.charCode <= 57">
+                    </div>
+                    <div class="name-container">
+                        <label>Banco Emisor</label>
+                        <input type="text" name="emisor" id="name-text" maxlength="30" placeholder="BBVA"
+                        required
+                        onkeypress="return (event.charCode > 64 && event.charCode < 91) || (event.charCode > 96 && event.charCode < 123) || event.key == ' '">
+                    </div>
+                    <div class="infos-container">
+                        <div class="expiration-container">
+                            <label>Monto</label>
+                            <input type="text" name="monto" id="monto" maxlength="6" placeholder="0">
+                        </div>
+                        <div class="cvv-container">
+                            <label>NIP</label>
+                            <input type="text" name="nip" id="nip" maxlength="4" placeholder="0000"
+                            required
+                            onkeypress="return event.charCode >=48 && event.charCode <= 57">
+                        </div>
+                    </div>
+                    <input type="submit" value="Retirar" id="add">
+                </form>
+            </div>
+            <div class="container-right">
+                <div class="card">
+                    <div class="intern">
+                        <img class="approximation" src="/img/aprox.png" alt="aproximation">
+                        <div class="card-number">
+                            
+                            <div class="number-vl"></div>
+                        </div>
+                        <div class="card-holder">
+                            <label>Banco Emisor</label>
+                            <div class="name-vl"></div>
+                        </div>
+                        
+                        <img class="chip" src="/img/chip.png" alt="chip">
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <script src="/js/index.js"></script>
+</body>
+</html>
