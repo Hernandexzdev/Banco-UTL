@@ -3,6 +3,7 @@ import cors from 'cors';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import indexRoutes from "../routes/index.routes.js";
+import accountRoutes from "../routes/account.routes.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
@@ -26,6 +27,7 @@ export class Server{
 
     routes(){
         this.app.use('/api', indexRoutes);
+        this.app.use('/api', accountRoutes);
     }
 
     listen(){
