@@ -1,7 +1,11 @@
 import { withdrawalmoneyappservice } from "../appservice/appService.js";
 
 export const bank_account = async(req, res) =>{
-    console.log( req.body );
+    console.log(req.body);
+
     const [results] = await withdrawalmoneyappservice( req.body );
-    res.status(200).json(  results  );
+    console.log( results);
+          res.render('banco',{msg: results.msg, codigo: results.nuevo_folio});
+   
+
 }

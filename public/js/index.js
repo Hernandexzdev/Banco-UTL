@@ -39,10 +39,3 @@ cardHolder.addEventListener("keyup", (e) => {
     }
 })
 
-
-
-form.addEventListener("submit", (e) => {
-    e.preventDefault();
-
-    alert("Credit Card Added!");
-})

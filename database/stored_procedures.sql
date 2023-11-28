@@ -4,21 +4,20 @@ CREATE PROCEDURE RegistrarTransaccion (
     IN n_tarjeta INT,
     IN emisor VARCHAR(50),
     IN monto INT,
-    IN nip VARCHAR(4)
+    IN nip_cp INT
     
 )
 BEGIN
     DECLARE exito BOOLEAN DEFAULT TRUE;
     DECLARE nuevo_folio VARCHAR(50);
     DECLARE nuevo_monto INT;
-    DECLARE msg1 VARCHAR(50);
-    DECLARE msg2 VARCHAR(50);
-    DECLARE msg3 VARCHAR(50);
-    DECLARE msg4 VARCHAR(50);
-    DECLARE cuenta VARCHAR(150);
+    DECLARE msg VARCHAR(255);
+    DECLARE msg1 varchar(255);
+    DECLARE Cuenta VARCHAR(150);
+    DECLARE tarjeta VARCHAR(4) DEFAULT 0;
+    DECLARE nip_p Varchar(4)DEFAULT 0;
     DECLARE cantidad_1 INT;
     DECLARE cantidad_2 INT;
-
     -- Inicia la transacción
     START TRANSACTION;
 
@@ -29,63 +28,74 @@ BEGIN
         LPAD(monto, 3, '0') -- Tres números con relleno a la izquierda
     );
 
-	-- Verificamos si el cajero tiene dineor
-        select Cantidad INTO nuevo_monto from cajero where id_cajero = 1;
-    
-    -- Simula una condición de error si el monto es menor a 0
-    IF monto > nuevo_monto or nuevo_monto = 0 THEN
-        SET exito = FALSE;
-    END IF;
 
-    -- Finaliza la transacción
+	SELECT Nip INTO nip_p FROM banco WHERE Nip = nip_cp;  
+	SELECT Numero_Tarjeta, Cantidad_cuenta INTO tarjeta, Cuenta FROM banco WHERE Numero_Tarjeta = n_tarjeta;
+    select Cantidad_cajero INTO nuevo_monto from cajero where id_cajero = 1;
+    
+    IF tarjeta = 0 THEN 
+	SET exito = FALSE;
+	END IF;
+    
     IF exito THEN
-        COMMIT;
-		    -- Verificamos que si exita la cuneta 
-			SELECT Cantidad INTO Cuenta FROM banco WHERE banco_emisor = emisor and Numero_Tarjeta = n_tarjeta;
-			
-			IF monto > cantidad or Cuenta = 0 THEN
+    
+		IF nip_p = 0 THEN 
+		SET exito = FALSE;
+		END IF;
+        
+        
+		IF exito THEN
+			IF monto > Cuenta OR Cuenta = 0 THEN
 			SET exito = FALSE;
 			END IF;
-			
-			IF exito THEN
+            
+            IF exito THEN
+				IF monto > nuevo_monto OR nuevo_monto = 0 THEN
+				SET exito = FALSE;
+				END IF;
+                
+                IF exito THEN
 				
-				COMMIT;
-				
-				SET cantidad_1 = Cuenta - monto;
-				UPDATE banco SET Cantidad = cantidad_1 WHERE Numero_Tarjeta = n_tarjeta;
-                SET cantidad_2 = nuevo_monto - monto;
-                UPDATE cajero SET Cantidad = cantidad_2 WHERE id_cajero = 1;
-				INSERT INTO registro_transaccion(codigo, registro_T) values(nuevo_folio, "Transacción exitosa.");
-				SET msg1  = "Transaccion Exitosa";
-                select msg1;
+					IF exito THEN
+					COMMIT;
+						SET cantidad_1 = Cuenta - monto;
+						UPDATE banco SET Cantidad_cuenta = cantidad_1 WHERE Numero_Tarjeta = n_tarjeta;
+						SET cantidad_2 = nuevo_monto - monto;
+						UPDATE cajero SET Cantidad_cajero = cantidad_2 WHERE id_cajero = 1;
+						INSERT INTO registro_transaccion(codigo, registro_T) values(nuevo_folio, "Transacción exitosa.");
+						SET msg  = 'Transacción exitosa.';
+						select msg, nuevo_folio ;
+					ELSE
+				   ROLLBACK;
+						INSERT INTO registro_transaccion(codigo, registro_T) values(nuevo_folio, "La transacción no se procesó.");
+						SET msg  = "La transacción no se procesó.";
+						select msg, nuevo_folio;
+					END IF;
+					
+				ELSE
+					SET msg = "No hay suficiente dinero en el cajero.";
+					SELECT msg;
+				END IF;
 			ELSE
-				
-				ROLLBACK;
-				
-				INSERT INTO registro_transaccion(codigo, registro_T) values(nuevo_folio, "La transacción no se procesó.");
-				SET msg1  = "La transacción no se procesó.";
-                select msqg1;
+			SET msg = "No tienes suficiente saldo.";
+            SELECT msg;
 			END IF;
-    
-        
-    ELSE
-		
-        ROLLBACK;
-        
-        INSERT INTO registro_transaccion(codigo, registro_T) values(nuevo_folio, "La transacción no se procesó.");
-		SET msg3 = "El cajero no tiene suficiente dinero";
-        SELECT msg3;
-    END IF;
+		ELSE
+		SET msg = "Nip incorreto.";
+        SELECT msg;
+		END IF;
+	ELSE
+		SET msg = "No se encontro la cuenta.";
+        SELECT msg;
+	END IF;
+	
+   
 
 
     
-
-END //
-
+    END //
 DELIMITER ;
 
-call RegistrarTransaccion(4555, "BBVA", 700, "1234");
-
-
+call RegistrarTransaccion("4555", "BBVA", 10, "123");
 use banco;
 drop procedure RegistrarTransaccion;

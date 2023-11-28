@@ -1,8 +1,10 @@
 import express from "express";
 import cors from 'cors';
+import bodyParser from "body-parser";
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
-import indexRoutes from "../routes/index.routes.js";
+import bancoRoutes from "../routes/index.routes.js";
+
 import accountRoutes from "../routes/account.routes.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -21,12 +23,13 @@ export class Server{
         this.app.set('view engine', 'ejs');
         this.app.use( this.cors() );
         this.app.use( express.json() );
+        this.app.use( bodyParser.urlencoded({extended: true}) )
         this.app.use( express.static('public') );
 
     }
 
     routes(){
-        this.app.use('/api', indexRoutes);
+        this.app.use('/api', bancoRoutes);
         this.app.use('/api', accountRoutes);
     }
 

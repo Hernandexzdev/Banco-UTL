@@ -5,17 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/css/styles.css">
     <link rel="shortcut icon" href="/img/banco.png" type="image/x-icon">
-    <title>Banco terminal</title>
+    <title>Banco UTL</title>
 </head>
 <body>
     <main class="container">
         <section class="ui">
             <div class="container-left">
           
-                <form action="/api/withdrawal" method="post" id="credit-card">
+                <form action="/api/withdrawal" method="post" id="credit-card" >
                     <div class="number-container">
                         <label>Numero de Tarjeta</label>
-                        <input type="number" name="N_tarjeta" id="card-number" maxlength="19" placeholder="" class="tarjeta"
+                        <input type="text" name="N_tarjeta" id="card-number" maxlength="19" placeholder="" class="tarjeta"
                         required
                         onkeypress="return event.charCode >= 48 && event.charCode <= 57">
                     </div>
@@ -28,7 +28,7 @@
                     <div class="infos-container">
                         <div class="expiration-container">
                             <label>Monto</label>
-                            <input type="number" name="monto" id="monto" maxlength="6" placeholder="0" class="monto">
+                            <input type="text" name="monto" id="monto" maxlength="6" placeholder="0" class="monto">
                         </div>
                         <div class="cvv-container">
                             <label>NIP</label>
@@ -37,7 +37,8 @@
                             onkeypress="return event.charCode >=48 && event.charCode <= 57">
                         </div>
                     </div>
-                    <input onclick="mostrarSweetAlert()"  type="submit" value="Retirar" id="add">
+                    <input  type="submit" value="Retirar" id="add">
+                   
                 </form>
             </div>
             <div class="container-right">
@@ -62,8 +63,30 @@
     </main>
     <script src="/js/index.js"></script>
     <script src="/js/sweetalert.js"></script>
-
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        
+        if ('<%= msg %>' == 'Transacción exitosa.') {
+             mostrarExito = true;
+        }else{
+            mostrarExito = false;
+        }
+
+        if ('<%= msg %>' == 'No se encontro la cuenta.') {
+             busquedaexito = false;
+        }else{
+            busquedaexito = true;
+        }
+        
+    Swal.fire({
+      title: mostrarExito ? '<%= msg %>' :'<%= msg %>' ,
+      text: mostrarExito ? '<%= codigo %>' :'<%= codigo %>',
+      icon: mostrarExito ? 'success' : busquedaexito ? 'warning': 'question',
+      confirmButtonText: 'Continuar'
+    });
+    </script>
+    
+   
     
 
 </body>
